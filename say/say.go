@@ -1,15 +1,9 @@
-package main
+package say
 
-import (
-	"fmt"
-	"math"
-	"os"
-	"os/exec"
-)
-
+// Unit to map a number with it's string
 type Unit map[uint64]string
 
-var num = Unit{
+var numreal = Unit{
 	1: "one",
 	2: "two",
 	3: "three",
@@ -35,49 +29,92 @@ var teen = Unit{
 }
 
 var tens = Unit{
-	20: "twenty",
-	30: "thirty",
-	40: "forty",
-	50: "fifty",
-	60: "sixty",
-	70: "seventy",
-	80: "eighty",
-	90: "ninety",
+	2: "twenty",
+	3: "thirty",
+	4: "forty",
+	5: "fifty",
+	6: "sixty",
+	7: "seventy",
+	8: "eighty",
+	9: "ninety",
 }
 
-var big = Unit{
-	1e3:  "thousand",
-	1e6:  "million",
-	1e9:  "billion",
-	1e12: "trillion",
-	1e15: "quadrillion",
-	1e18: "quintillion",
-}
+var big = []string{"thousand", "million", "billion", "trillion", "quadrillion", "quintillion"}
 
-func Macsay(s string) {
-	saybin, err := exec.LookPath("say")
-	if err != nil {
-		fmt.Printf("err = %+v, say binary could not be found!\n", err)
-		os.Exit(1)
+func section(num uint64) (res string) {
+	unit := num % 10
+	ten := (num / 10) % 10
+	hundred := (num / 100) % 10
+	if hundred > 0 {
+		res += numreal[hundred] + " hundred"
 	}
-	err = exec.Command(saybin, s).Run()
-	if err != nil {
-		fmt.Printf("err = %+v\n", err)
+	if unit == 0 && ten == 0 {
+		return
 	}
+	if (unit > 0 || ten > 0) && hundred > 0 {
+		res += " "
+	}
+	if ten == 1 {
+		res += teen[(ten*10)+unit]
+		return
+	}
+	res += tens[ten]
+	if unit == 0 {
+		return
+	}
+	if ten > 1 && unit > 0 {
+		res += "-"
+	}
+	res += numreal[unit]
+	return
 }
 
 // Say input number as english words
-func say(num uint64) string {
+func Say(num uint64) string {
 	var result string
+	if num < 1 {
+		return "zero"
+	}
+	var numsections []uint64
 
+	// break numbers up into thousands (3 digits per element)
+	for {
+		if num <= 0 {
+			break
+		}
+		numsections = append(numsections, num%uint64(1000))
+		num /= 1000
+	}
+
+	// say 3 digit number (if last set, combine ten and unit number with dash, e.g twenty-three)
+	for i := len(numsections) - 1; i >= 0; i-- {
+		result += section(numsections[i])
+		if i == 0 {
+			break
+		}
+		if numsections[i] > 0 {
+			result += " " + big[i-1]
+		}
+		if numsections[i-1] > 0 {
+			result += " "
+		}
+	}
 	return result
-
 }
 
-func main() {
-	fmt.Println(big[100])
-	fmt.Println(big[1e2])
-	fmt.Println(big[1000])
-	fmt.Printf("100000 exponent = %v\n", math.Ilogb(3000))
-	fmt.Printf("123400 exponent = %v\n", math.Exp(5))
-}
+// func Macsay(num uint64) {
+//  sentence := Say(num)
+// 	saybin, err := exec.LookPath("say")
+// 	if err != nil {
+// 		fmt.Printf("err = %+v, say binary could not be found!\n", err)
+// 		os.Exit(1)
+// 	}
+// 	err = exec.Command(saybin, sentence).Run()
+// 	if err != nil {
+// 		fmt.Printf("err = %+v\n", err)
+// 	}
+// }
+
+// func main() {
+// 	fmt.Println(say(1234567890))
+// }
