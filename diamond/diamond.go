@@ -18,7 +18,7 @@ func Gen(c byte) (result string, err error) {
 	// add character in the correct positions
 	// once we cross halfway point the formula for letter and row change
 	for k := range block {
-		letter := 'A' + ((rlen / 2) - (k - (rlen / 2)))
+		letter := 'A' + (rlen - k - 1)
 		if k < (rlen+1)/2 {
 			letter = 'A' + k%((rlen+1)/2)
 		}
@@ -33,11 +33,10 @@ func Gen(c byte) (result string, err error) {
 				row += string(letter)
 				continue
 			}
-			row += "-"
+			row += string('·')
 		}
 		block[k] = row
 	}
-
 	result = strings.Join(block, "\n")
 	return
 }
