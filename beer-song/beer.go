@@ -8,7 +8,7 @@ import (
 
 const testVersion = 1
 
-func bottle(v, l int) string {
+func bottle(v int) string {
 	switch v {
 	case 1:
 		return "1 bottle"
@@ -52,8 +52,8 @@ func Verse(v int) (string, error) {
 	} else {
 		takeitdown = "Take " + take + " down and pass it around"
 	}
-	l1 = fmt.Sprintf("%s %s %s, %s %[2]s.\n", strings.Map(capitaliseN, bottle(v, 1)), ofbeer, onthewall, bottle(v, 1))
-	l2 = fmt.Sprintf("%s, %s %s %s.\n", takeitdown, bottle(v-1, 1), ofbeer, onthewall)
+	l1 = fmt.Sprintf("%s %s %s, %s %[2]s.\n", strings.Map(capitaliseN, bottle(v)), ofbeer, onthewall, bottle(v))
+	l2 = fmt.Sprintf("%s, %s %s %s.\n", takeitdown, bottle(v-1), ofbeer, onthewall)
 	return l1 + l2, nil
 }
 
