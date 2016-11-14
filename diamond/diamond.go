@@ -33,10 +33,10 @@ func Gen(c byte) (result string, err error) {
 				row += string(letter)
 				continue
 			}
-			row += string('·')
+			row += string(' ')
 		}
 		block[k] = row
 	}
-	result = strings.Join(block, "\n")
+	result = strings.Join(block, "\n") + "\n"
 	return
 }
