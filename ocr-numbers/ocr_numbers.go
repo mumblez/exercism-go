@@ -26,18 +26,12 @@ func recognizeDigit(s string) string {
 
 // Recognize ...
 func Recognize(input string) []string {
-	// every digit = 3 columns wide and 3 rows high
 	var digit, ret []string
 	var lines [][]string
-
-	image := strings.Split(input, "\n")
-
-	for k, v := range image {
-		// skip first line
+	for k, v := range strings.Split(input, "\n") {
 		if k%4 == 0 {
 			continue
 		}
-		// for every 3 cols append
 		for x, y := range v {
 			if k%4 == 1 && x%3 == 0 {
 				digit = append(digit, string(y))
@@ -45,12 +39,11 @@ func Recognize(input string) []string {
 			}
 			digit[x/3] += string(y)
 		}
-		// append to lines
 		if k%4 == 3 {
 			lines = append(lines, digit)
+			digit = []string{}
 		}
 	}
-
 	for k, line := range lines {
 		for kk, v := range line {
 			if kk == 0 {
