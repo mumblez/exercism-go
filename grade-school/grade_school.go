@@ -46,8 +46,8 @@ func (s *School) Add(stu string, g int) {
 		return
 	}
 	if gradeExists && !studentExists {
-		for k, gs := range s.Grades {
-			if gs.grade == g {
+		for k := range s.Grades {
+			if s.Grades[k].grade == g {
 				s.Grades[k].students = append(s.Grades[k].students, stu)
 				return
 			}
@@ -61,10 +61,10 @@ func (s *School) Grade(g int) []string {
 	if !gradeExist {
 		return nil
 	}
-	for _, gs := range s.Grades {
-		if gs.grade == g {
-			sort.Strings(gs.students)
-			return gs.students
+	for k := range s.Grades {
+		if s.Grades[k].grade == g {
+			sort.Strings(s.Grades[k].students)
+			return s.Grades[k].students
 		}
 	}
 	return nil
@@ -88,8 +88,8 @@ func (g gds) Less(i, j int) bool {
 // Enrollment ...
 func (s *School) Enrollment() []Grade {
 	// sort students
-	for _, gs := range s.Grades {
-		sort.Strings(gs.students)
+	for k := range s.Grades {
+		sort.Strings(s.Grades[k].students)
 	}
 	// sort grades (custom sort)
 	sort.Sort(gds(s.Grades))
